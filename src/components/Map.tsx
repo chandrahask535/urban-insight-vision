@@ -3,6 +3,7 @@ import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { LatLngTuple } from 'leaflet';
 
 // Fix Leaflet icon paths
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -16,14 +17,14 @@ interface MapProps {
   city: string;
 }
 
-const cityCoordinates = {
+const cityCoordinates: Record<string, LatLngTuple> = {
   bangalore: [12.9716, 77.5946],
   mumbai: [19.0760, 72.8777],
   delhi: [28.6139, 77.2090],
 };
 
 const Map = ({ city }: MapProps) => {
-  const position = cityCoordinates[city as keyof typeof cityCoordinates];
+  const position: LatLngTuple = cityCoordinates[city as keyof typeof cityCoordinates];
 
   return (
     <MapContainer
@@ -46,7 +47,7 @@ const Map = ({ city }: MapProps) => {
       
       {/* Flood Risk Areas */}
       <Circle
-        center={[position[0] + 0.02, position[1] + 0.02]}
+        center={[position[0] + 0.02, position[1] + 0.02] as LatLngTuple}
         radius={1000}
         pathOptions={{ color: 'red', fillColor: 'red' }}
       >
@@ -54,7 +55,7 @@ const Map = ({ city }: MapProps) => {
       </Circle>
       
       <Circle
-        center={[position[0] - 0.02, position[1] - 0.02]}
+        center={[position[0] - 0.02, position[1] - 0.02] as LatLngTuple}
         radius={1500}
         pathOptions={{ color: 'orange', fillColor: 'orange' }}
       >

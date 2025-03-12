@@ -1,20 +1,15 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { Progress } from "@/components/ui/progress";
-import dynamic from 'next/dynamic';
-import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 // Dynamically import Leaflet components to avoid SSR issues
-const Map = dynamic(() => import('@/components/Map'), {
-  loading: () => <p>Loading map...</p>,
-  ssr: false
-});
+const Map = lazy(() => import('@/components/Map'));
 
 const Index = () => {
   const { toast } = useToast();
@@ -49,7 +44,7 @@ const Index = () => {
     };
     
     loadData();
-  }, [selectedCity]);
+  }, [selectedCity, toast]);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -83,7 +78,9 @@ const Index = () => {
         <Card className="lg:col-span-2 p-4">
           <h2 className="text-xl font-semibold mb-4">Geographic Overview</h2>
           <div className="map-container">
-            <Map city={selectedCity} />
+            <Suspense fallback={<p>Loading map...</p>}>
+              <Map city={selectedCity} />
+            </Suspense>
           </div>
         </Card>
 
